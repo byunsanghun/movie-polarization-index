@@ -17,7 +17,7 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent   # 프로젝트 최상위 폴더
 DATA_DIR = ROOT / "data" / "ml-25m"             # 테스트할 땐 "ml-latest-small"로 변경
 OUT_DIR = ROOT / "results"
-MIN_RATINGS = 50                                # 평점 수가 이보다 적은 영화는 제외
+MIN_RATINGS = 100                               # 평점 수가 이보다 적은 영화는 제외
 MAX_STD = 2.25                                  # 0.5~5.0 범위에서 가능한 최대 표준편차
 
 
