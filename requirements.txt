@@ -1,7 +1,7 @@
 pandas==2.3.3
+requests==2.34.2        # TMDB API 호출
+python-dotenv==1.2.4    # .env에서 API 키 읽기
 
 # 앞으로 쓸 예정 (사용 시점에 주석 해제)
-# requests        # TMDB API 호출
-# python-dotenv   # .env에서 API 키 읽기
 # statsmodels     # 다중회귀 (가설 검증)
 # matplotlib      # 시각화
