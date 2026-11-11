@@ -42,7 +42,13 @@
 - [x] SQLite 적재 (sql/01_create_tables.sql, src/load_db.py → data/movies.db, 분석용 뷰 analysis_base 10,244편)
       분석 쿼리: sql/02_analysis_queries.sql. 단순 비교상 PI 분위와 투표 수는 가운데가 높은 산 모양 (통제 전, H1 회귀로 확인 필요)
 - [ ] SQLite/PostgreSQL에 테이블 적재 + SQL 분석 쿼리 (DB 개발자 포트폴리오 포인트)
-- [ ] 가설 검증, 시각화, README 정리
+- [x] H1 (src/h1_regression.py): PI 효과는 투표 수에서 없음(p=0.79), popularity에서 작은 양(+) (PI 1SD당 약 +2.9%, p<0.001). 보정 PI B·C도 같은 방향
+- [x] H4 (src/h4_regression.py): 평점 수 통제 전후 PI 계수 변화 없음 → 지지 안 됨. PI와 log(평점 수) 상관 -0.10.
+      계수가 크게 바뀌는 지점은 평균 평점·연도 투입 단계(원인 분리는 미완)
+- [x] H3 (src/h3_regression.py): 평균 평점² 유의(∩ 모양) → 비선형 지지. 다만 PI 효과는 평균 평점 3.0 미만에서 양(+),
+      3.0 이상에서 투표 수는 음(-)·무관, PI×평균 평점 상호작용 음(-). "PI 높은 구간에서만 양" 가설과는 반대 방향
+      (다중 검정 보정 안 함, 4.0 이상 구간은 344편으로 불확실)
+- [ ] H2 (장르 상호작용), 시각화(동훈), README 정리, GitHub push
 
 ## 폴더 구조
 - src/      분석 코드 (pi.py)
