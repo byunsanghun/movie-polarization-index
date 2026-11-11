@@ -18,7 +18,7 @@
 
 ## 지표 정의
 - PI = 영화별 평점 표준편차 / 2.25 (0.5~5.0 범위의 최대 표준편차로 정규화, 0~1)
-- 평점 수 MIN_RATINGS(현재 50) 이상인 영화만 사용
+- 평점 수 MIN_RATINGS(현재 100) 이상인 영화만 사용 (50/100/200 비교 후 100 채택, 회귀에서 민감도 확인 예정)
 - 보조 지표 후보: 극단 평점 비율, 정규화 엔트로피
 
 ## 가설 (4개)
@@ -33,9 +33,12 @@
 - [x] MovieLens 25M 다운로드, 프로젝트 폴더 구조 정리, GitHub 연결
 - [x] src/pi.py 작성 및 실행 → 13,176편 PI 산출, results/pi_by_movie.csv 생성
       (TOP: Santa with Muscles, The Room, God's Not Dead, Manos 등 컬트·논쟁작)
-- [ ] MIN_RATINGS 50 vs 100 비교 (표본 작은 영화가 상위권에 섞임)
-- [ ] 평균 평점 영향을 보정한 PI 검토 (평균이 중간일수록 표준편차가 커질 수 있는 구조)
-- [ ] TMDB API 키 발급 → 화제성 데이터 수집·결합
+- [x] MIN_RATINGS 50/100/200 비교 → 100 채택 (src/compare_min_ratings.py). 10,326편. 회귀 단계에서 50/200 민감도 확인 예정
+- [x] 평균 평점 보정 PI 검토 (src/pi_adjusted.py, results/pi_adjusted_compare.csv)
+      원래 PI와 평균 평점 상관 -0.517 확인. 결정: 메인은 원래 PI + 회귀에서 mean_rating 통제,
+      보정 PI는 민감도 분석용 (B 구조 보정 = std/sqrt((평균-0.5)(5-평균)), C 잔차). D 구간 백분위는 사용 안 함(작은 구간 동점 문제)
+- [x] TMDB API 키 발급, src/tmdb_fetch.py 작성 (키는 .env, 결과는 data/tmdb_movies.csv, 수집일 fetched_at 기록)
+- [ ] TMDB 전체 수집 완료 확인 (대상 10,321편, tmdbId 결측 5편) → 결측·not_found 편수 집계, PI와 결합
 - [ ] SQLite/PostgreSQL에 테이블 적재 + SQL 분석 쿼리 (DB 개발자 포트폴리오 포인트)
 - [ ] 가설 검증, 시각화, README 정리
 
