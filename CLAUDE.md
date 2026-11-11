@@ -38,7 +38,9 @@
       원래 PI와 평균 평점 상관 -0.517 확인. 결정: 메인은 원래 PI + 회귀에서 mean_rating 통제,
       보정 PI는 민감도 분석용 (B 구조 보정 = std/sqrt((평균-0.5)(5-평균)), C 잔차). D 구간 백분위는 사용 안 함(작은 구간 동점 문제)
 - [x] TMDB API 키 발급, src/tmdb_fetch.py 작성 (키는 .env, 결과는 data/tmdb_movies.csv, 수집일 fetched_at 기록)
-- [ ] TMDB 전체 수집 완료 확인 (대상 10,321편, tmdbId 결측 5편) → 결측·not_found 편수 집계, PI와 결합
+- [x] TMDB 전체 수집 완료 (2026-11-11 기준): 성공 10,244 / TMDB에 없음 77 / tmdbId 결측 5. 중복 tmdbId 2건(MovieLens 중복 등록)
+- [x] SQLite 적재 (sql/01_create_tables.sql, src/load_db.py → data/movies.db, 분석용 뷰 analysis_base 10,244편)
+      분석 쿼리: sql/02_analysis_queries.sql. 단순 비교상 PI 분위와 투표 수는 가운데가 높은 산 모양 (통제 전, H1 회귀로 확인 필요)
 - [ ] SQLite/PostgreSQL에 테이블 적재 + SQL 분석 쿼리 (DB 개발자 포트폴리오 포인트)
 - [ ] 가설 검증, 시각화, README 정리
 
