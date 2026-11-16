@@ -13,7 +13,7 @@
 
 ## 데이터
 - MovieLens 25M (data/ml-25m/): ratings.csv(약 2,500만 건), movies.csv, links.csv 등
-- TMDB API: popularity, vote_count 등 화제성 지표 (links.csv의 tmdbId로 결합) — 아직 수집 전
+- TMDB API: popularity, vote_count 등 화제성 지표 (links.csv의 tmdbId로 결합) — 2026-11-11 수집 완료 (data/tmdb_movies.csv, DB는 data/movies.db)
 - 원본 데이터는 용량·재배포 금지 때문에 GitHub에 올리지 않음 (.gitignore에 data/)
 
 ## 지표 정의
@@ -31,7 +31,7 @@
 
 ## 진행 상황
 - [x] MovieLens 25M 다운로드, 프로젝트 폴더 구조 정리, GitHub 연결
-- [x] src/pi.py 작성 및 실행 → 13,176편 PI 산출, results/pi_by_movie.csv 생성
+- [x] src/pi.py 작성 및 실행 → results/pi_by_movie.csv 생성 (처음 MIN_RATINGS=50 기준 13,176편, 현재는 100 기준 10,326편)
       (TOP: Santa with Muscles, The Room, God's Not Dead, Manos 등 컬트·논쟁작)
 - [x] MIN_RATINGS 50/100/200 비교 → 100 채택 (src/compare_min_ratings.py). 10,326편. 회귀 단계에서 50/200 민감도 확인 예정
 - [x] 평균 평점 보정 PI 검토 (src/pi_adjusted.py, results/pi_adjusted_compare.csv)
@@ -41,7 +41,6 @@
 - [x] TMDB 전체 수집 완료 (2026-11-11 기준): 성공 10,244 / TMDB에 없음 77 / tmdbId 결측 5. 중복 tmdbId 2건(MovieLens 중복 등록)
 - [x] SQLite 적재 (sql/01_create_tables.sql, src/load_db.py → data/movies.db, 분석용 뷰 analysis_base 10,244편)
       분석 쿼리: sql/02_analysis_queries.sql. 단순 비교상 PI 분위와 투표 수는 가운데가 높은 산 모양 (통제 전, H1 회귀로 확인 필요)
-- [ ] SQLite/PostgreSQL에 테이블 적재 + SQL 분석 쿼리 (DB 개발자 포트폴리오 포인트)
 - [x] H1 (src/h1_regression.py): PI 효과는 투표 수에서 없음(p=0.79), popularity에서 작은 양(+) (PI 1SD당 약 +2.9%, p<0.001). 보정 PI B·C도 같은 방향
 - [x] H4 (src/h4_regression.py): 평점 수 통제 전후 PI 계수 변화 없음 → 지지 안 됨. PI와 log(평점 수) 상관 -0.10.
       계수가 크게 바뀌는 지점은 평균 평점·연도 투입 단계(원인 분리는 미완)
@@ -51,10 +50,12 @@
 - [ ] H2 (장르 상호작용), 시각화(동훈), README 정리, GitHub push
 
 ## 폴더 구조
-- src/      분석 코드 (pi.py)
-- sql/      테이블 생성·분석 쿼리
-- data/     원본 데이터 (Git 제외)
-- results/  산출물·그래프
+- src/      분석 코드: pi.py(PI 계산), compare_min_ratings.py, pi_adjusted.py(보정 PI), tmdb_fetch.py(TMDB 수집),
+            genre_dummies.py, load_db.py(SQLite 적재), h1_regression.py, h3_regression.py, h4_regression.py
+- sql/      테이블 생성(01_create_tables.sql)·분석 쿼리(02_analysis_queries.sql)
+- data/     원본 데이터·TMDB 수집 결과·movies.db (Git 제외)
+- results/  산출물 CSV (pi_by_movie.csv, 보정 PI, 장르 더미, 회귀 결과 등)
+- 실행 시 한글 깨짐 방지: python -X utf8 src/파일명.py
 
 ## 작업 규칙
 - 사용자는 Git·Python 초보. 설명은 한국어로, 짧게, 비유와 표 위주로.
@@ -79,6 +80,7 @@
 ## 변수 정의 (가설 검증용)
 - PI: 위 지표 정의 참고 (results/pi_by_movie.csv)
 - 화제성(종속변수): TMDB vote_count, TMDB popularity, MovieLens 태그 수
+  (현재 vote_count, popularity만 분석. 태그 수는 MovieLens 평점 수 통제와 출처가 겹쳐 보류)
 - 통제변수: 평균 평점(mean_rating), MovieLens 평점 수(n_ratings), 개봉 연도
 - 주의: 화제성과 통제변수에 같은 출처의 '평점 수'를 겹쳐 쓰지 않기
 - 개수형 변수(투표 수, 태그 수, 평점 수)는 치우침이 커서 log(1+x) 변환 검토
@@ -91,12 +93,13 @@
 - H4: 평점 수를 넣기 전/후 PI 계수 변화 비교
 
 ## 지금까지 결과 (실제 실행 기준)
-- 평점 25,000,095건 → 평점 50개 이상 영화 13,176편 PI 산출
+- 평점 25,000,095건 → 평점 100개 이상 영화 10,326편 PI 산출 (50개 이상이면 13,176편)
 - PI 최고: Santa with Muscles (0.7745), The Room (0.7400) 등 컬트·종교/정치 논쟁작
-- PI 최저: Hawaii (1966) (0.2424)
-- 관찰: PI 상위권 영화는 평균 평점이 2점대에 몰림 → 평균의 영향 보정 필요
+- PI 최저(100 기준): Hijacking, A (Kapringen) (2012) (0.2682)
+- 관찰: PI 상위권 영화는 평균 평점이 2점대에 몰림 (PI와 평균 평점 상관 -0.517) → 보정 PI로 민감도 확인함
+- TMDB 결합 후 분석 대상 10,244편 (회귀는 연도 결측 8편 제외 10,236편)
 
 ## 기타 맥락
-- 지산학 캡스톤멘토링 주차별 보고서(HWP)를 매주 제출 중. 4주차까지 완료
+- 지산학 캡스톤멘토링 주차별 보고서(HWP)를 매주 제출 중. 4주차까지 완료, 5주차는 11/10~11/11 작업(MIN_RATINGS, 보정 PI, TMDB 수집, SQLite, H1·H3·H4) 기준으로 작성
 - 분석 결과는 보고서에 쓸 수 있게 "무엇을 했고, 수치가 어떻게 나왔는지" 짧게 요약해 줄 것
 - TMDB 데이터 사용 시 README에 TMDB 출처 표기 필요
