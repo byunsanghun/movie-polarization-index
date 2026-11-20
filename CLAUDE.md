@@ -47,11 +47,16 @@
 - [x] H3 (src/h3_regression.py): 평균 평점² 유의(∩ 모양) → 비선형 지지. 다만 PI 효과는 평균 평점 3.0 미만에서 양(+),
       3.0 이상에서 투표 수는 음(-)·무관, PI×평균 평점 상호작용 음(-). "PI 높은 구간에서만 양" 가설과는 반대 방향
       (다중 검정 보정 안 함, 4.0 이상 구간은 344편으로 불확실)
-- [ ] H2 (장르 상호작용), 시각화(동훈), README 정리, GitHub push
+- [x] H2 (src/h2_regression.py): 부분 지지. 해석형 단독(1,997편) vs 비교군 단독(4,280편) 비교에서 투표 수 PI×해석형 +0.070(p=0.013)이었으나
+      PI×평균 평점을 통제하면 +0.017(p=0.56)로 사라짐, popularity는 처음부터 차이 없음.
+      장르별 PI 효과: Thriller 투표 수 +0.134·popularity +0.068(둘 다 p<0.001), Sci-Fi 효과 없음, Horror는 popularity만(+0.045),
+      Drama는 투표 수에서 음(-)(-0.069). 장르별 분석은 PI×평균 평점 미통제, 장르 간 차이 검정은 안 함, 다중 검정 보정 안 함
+- [ ] 남은 일: 스릴러 효과 보강(평균 평점×PI 통제), README(TMDB 출처 표기 포함), 시각화, MIN_RATINGS 50/200 민감도, 최종 push
+      (역할 분담: 동훈 시각화 담당 여부 미정)
 
 ## 폴더 구조
 - src/      분석 코드: pi.py(PI 계산), compare_min_ratings.py, pi_adjusted.py(보정 PI), tmdb_fetch.py(TMDB 수집),
-            genre_dummies.py, load_db.py(SQLite 적재), h1_regression.py, h3_regression.py, h4_regression.py
+            genre_dummies.py, load_db.py(SQLite 적재), h1~h4_regression.py(가설별 회귀)
 - sql/      테이블 생성(01_create_tables.sql)·분석 쿼리(02_analysis_queries.sql)
 - data/     원본 데이터·TMDB 수집 결과·movies.db (Git 제외)
 - results/  산출물 CSV (pi_by_movie.csv, 보정 PI, 장르 더미, 회귀 결과 등)
