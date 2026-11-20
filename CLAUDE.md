@@ -51,7 +51,10 @@
       PI×평균 평점을 통제하면 +0.017(p=0.56)로 사라짐, popularity는 처음부터 차이 없음.
       장르별 PI 효과: Thriller 투표 수 +0.134·popularity +0.068(둘 다 p<0.001), Sci-Fi 효과 없음, Horror는 popularity만(+0.045),
       Drama는 투표 수에서 음(-)(-0.069). 장르별 분석은 PI×평균 평점 미통제, 장르 간 차이 검정은 안 함, 다중 검정 보정 안 함
-- [ ] 남은 일: 스릴러 효과 보강(평균 평점×PI 통제), README(TMDB 출처 표기 포함), 시각화, MIN_RATINGS 50/200 민감도, 최종 push
+- [x] README 작성 (TMDB·MovieLens 출처 표기 포함)
+- [x] 시각화 (src/make_figures.py → results/figures/ 3종: PI vs 평균 평점, H3 구간별 효과, H2 장르별 효과)
+      색: 투표 수=파랑, popularity=주황 (색 검증 통과), 글꼴은 Windows 맑은 고딕
+- [ ] 남은 일: 스릴러 효과 보강(평균 평점×PI 통제), MIN_RATINGS 50/200 민감도, 최종 push
       (역할 분담: 동훈 시각화 담당 여부 미정)
 
 ## 폴더 구조

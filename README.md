@@ -45,7 +45,21 @@ PI = 영화별 평점 표준편차 / 2.25
 
 **한 줄 요약:** PI의 효과는 영화의 평균 평점 수준에 따라 달라집니다. 평균이 낮은 영화에서는 호불호가 갈릴수록 화제성이 컸고, 평균이 높은 영화에서는 그렇지 않았습니다. 화제성을 가장 크게 설명한 변수는 PI가 아니라 평점 수였습니다.
 
-세부 수치는 `results/h1_regression.csv` ~ `results/h4_regression.csv`에 있습니다.
+### 그림
+
+**1. PI와 평균 평점의 관계** — 평균 평점이 높을수록 PI가 낮아지는 경향이 있어(상관계수 -0.52), 평균 평점을 통제할 필요가 있었습니다.
+
+![PI와 평균 평점의 관계: 영화 10,326편의 겹침 밀도와 2차 회귀선](results/figures/fig1_pi_vs_mean.png)
+
+**2. H3 — 평균 평점 구간별 PI 효과** — 평균 평점이 낮은 영화일수록 PI가 화제성을 높이는 효과가 컸고, 평점이 높아질수록 효과가 줄었습니다. 투표 수는 평균 평점 3.0 이상에서 오히려 음(-)이었습니다.
+
+![평균 평점 구간별 PI 효과: 투표 수와 popularity의 계수와 95% 신뢰구간](results/figures/fig2_h3_by_mean_bin.png)
+
+**3. H2 — 장르별 PI 효과** — 스릴러에서는 투표 수·popularity 모두 뚜렷했고, SF는 효과가 없었습니다. 장르별 분석은 평균 평점×PI를 통제하지 않았습니다.
+
+![장르별 PI 효과: 해석형 3개와 비교군 2개 장르의 계수와 95% 신뢰구간](results/figures/fig3_h2_by_genre.png)
+
+그림 속 값은 `results/h2_regression.csv`, `results/h3_regression.csv`와 같은 숫자이고, 표로도 확인할 수 있습니다. 세부 수치는 `results/h1_regression.csv` ~ `results/h4_regression.csv`에 있습니다.
 
 ## 한계
 
@@ -75,6 +89,7 @@ data/     원본 데이터 (저장소에 포함하지 않음)
 | `src/tmdb_fetch.py` | TMDB 화제성 지표 수집 (중간 저장·이어받기 지원) |
 | `src/load_db.py` | CSV를 SQLite(`data/movies.db`)에 적재 |
 | `src/h1_regression.py` ~ `h4_regression.py` | 가설별 회귀 분석 |
+| `src/make_figures.py` | 결과 그래프 3종 생성 → `results/figures/` |
 | `sql/01_create_tables.sql` | 테이블 4개와 분석용 뷰(`analysis_base`) |
 | `sql/02_analysis_queries.sql` | 분석 쿼리 모음 |
 
@@ -97,7 +112,9 @@ data/     원본 데이터 (저장소에 포함하지 않음)
    python -X utf8 src/tmdb_fetch.py        # 약 1만 건, 수십 분 소요. 끊겨도 다시 실행하면 이어서 진행
    python -X utf8 src/load_db.py
    python -X utf8 src/h1_regression.py     # h2, h3, h4도 같은 방식
+   python -X utf8 src/make_figures.py      # 그래프 생성 (h2, h3 결과 CSV 필요)
    ```
+   그래프 글꼴은 Windows의 맑은 고딕입니다. 다른 운영체제에서는 `src/make_figures.py`의 `font.family`를 설치된 한글 글꼴로 바꿔 주세요.
    `src/tmdb_fetch.py`는 처음에 `--limit 5`로 5편만 시험 호출해 볼 수 있습니다.
 
 `popularity`는 수집 시점에 따라 값이 달라지므로, 다시 수집하면 결과가 이 문서와 조금 다를 수 있습니다.
